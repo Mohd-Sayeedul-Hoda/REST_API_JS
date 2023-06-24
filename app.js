@@ -60,11 +60,38 @@ app
 		}
 	});
 
-app.get('/api');
-
-app.post('/api');
-
-app.delete('/api');
+app
+	.route('/api/:no')
+	.get(async (req, res) => {
+		try {
+			const find = await apiModel.findOne({ no: req.params.no });
+			res.status(200).json(find);
+			console.log(find);
+		} catch (error) {
+			res.status(400).json({ message: error.message });
+		}
+	})
+	.delete(async (req, res) => {
+		try {
+			const del = await apiModel.deleteOne({ no: req.params.no });
+			res.status(200).json(del);
+			console.log(del);
+		} catch (error) {
+			res.status(400).json({ message: error.message });
+		}
+	})
+	.put(async (req, res) => {
+		try {
+			const update = await apiModel.findOneAndUpdate(
+				{ no: req.params.no },
+				{ $set: { message: req.body.message } }
+			);
+			res.status(200).json(update);
+			console.log(update);
+		} catch (error) {
+			res.status(400).json({ message: error.message });
+		}
+	});
 
 app.listen(3000, () => {
 	console.log(`Server Started at ${3000}`);
